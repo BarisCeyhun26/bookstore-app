@@ -20,18 +20,6 @@ public class Book extends PanacheEntity {
     @Column(name = "isbn", unique = true)
     public String isbn;
     
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    public Author author;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "publisher_id", nullable = false)
-    public Publisher publisher;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "genre_id", nullable = false)
-    public Genre genre;
-    
     @Column(name = "publication_date")
     public LocalDate publicationDate;
     
@@ -42,8 +30,7 @@ public class Book extends PanacheEntity {
     
     @NotBlank
     @Column(name = "format", nullable = false)
-    @Enumerated(EnumType.STRING)
-    public BookFormat format;
+    public String format;
     
     @Column(name = "description", columnDefinition = "TEXT")
     public String description;
@@ -54,15 +41,8 @@ public class Book extends PanacheEntity {
     @Column(name = "created_at")
     public LocalDateTime createdAt;
     
-    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    public Inventory inventory;
-    
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-    }
-    
-    public enum BookFormat {
-        PHYSICAL, E_BOOK, AUDIOBOOK
     }
 }

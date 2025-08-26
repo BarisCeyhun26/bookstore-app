@@ -169,16 +169,16 @@ export default function HomePage() {
                 {authors.map((author) => (
                   <div key={author.id} className="bg-white rounded-lg shadow-sm p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      {author.firstName} {author.lastName}
+                      {author.name}
                     </h3>
                     {author.biography && (
                       <p className="text-gray-600 text-sm mb-3 line-clamp-3">
                         {author.biography}
                       </p>
                     )}
-                    {author.email && (
+                    {author.nationality && (
                       <p className="text-gray-500 text-sm">
-                        📧 {author.email}
+                        🌍 {author.nationality}
                       </p>
                     )}
                   </div>

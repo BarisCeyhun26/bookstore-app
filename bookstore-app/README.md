@@ -13,8 +13,9 @@ Modern bir online kitap satış uygulaması. Backend (Node.js + PostgreSQL) ve F
 ## 🛠️ Teknolojiler
 
 ### Backend
-- **Node.js** - JavaScript runtime
-- **Express.js** - Web framework
+- **Quarkus** - Supersonic Subatomic Java framework
+- **Java 17** - Modern Java runtime
+- **Hibernate ORM** - Object-relational mapping
 - **PostgreSQL** - Veritabanı
 - **Docker** - Containerization
 
@@ -28,7 +29,7 @@ Modern bir online kitap satış uygulaması. Backend (Node.js + PostgreSQL) ve F
 
 ```
 bookstore-app/
-├── backend/          # Node.js API
+├── backend/          # Quarkus Java API
 ├── frontend/         # Next.js uygulaması
 ├── database/         # Veritabanı şeması
 ├── docker-compose.yml # Docker konfigürasyonu
@@ -64,8 +65,7 @@ bookstore-app/
 #### Backend
 ```bash
 cd backend
-npm install
-npm start
+./mvnw quarkus:dev
 ```
 
 #### Frontend
@@ -106,6 +106,18 @@ docker-compose down
 # Logları görüntüle
 docker-compose logs
 ```
+
+## 🔧 Geliştirme
+
+### Backend Geliştirme
+```bash
+cd backend
+./mvnw quarkus:dev
+```
+
+### API Dokümantasyonu
+- **Swagger UI**: http://localhost:8080/swagger-ui
+- **OpenAPI**: http://localhost:8080/openapi
 
 ## 🤝 Katkıda Bulunma
 
