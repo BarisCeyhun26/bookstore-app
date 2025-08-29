@@ -51,7 +51,7 @@ export default function BookCard({ book }) {
       </div>
 
       {/* Book Info */}
-      <div className="p-4">
+      <div className="p-3">
         {/* Format Badge */}
         <div className="mb-2">
           <span className={`inline-block px-2 py-1 text-xs font-medium rounded-full ${getFormatBadgeColor(book.format)}`}>
@@ -61,35 +61,35 @@ export default function BookCard({ book }) {
 
         {/* Title */}
         <Link href={`/books/${book.book_id}`}>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-primary-600 transition-colors">
+          <h3 className="text-base font-semibold text-gray-900 mb-1 hover:text-primary-600 transition-colors line-clamp-2">
             {book.title}
           </h3>
         </Link>
 
         {/* Author */}
-        <p className="text-sm text-gray-600 mb-2">
+        <p className="text-xs text-gray-600 mb-1">
           by {book.author_name}
         </p>
 
         {/* Genre */}
         {book.genre_name && (
-          <p className="text-xs text-gray-500 mb-3">
+          <p className="text-xs text-gray-500 mb-2">
             {book.genre_name}
           </p>
         )}
 
         {/* Price and Add to Cart */}
         <div className="flex items-center justify-between">
-          <span className="text-lg font-bold text-gray-900">
+          <span className="text-base font-bold text-gray-900">
             {formatPrice(book.price)}
           </span>
           
           <button
             onClick={handleAddToCart}
-            className="flex items-center space-x-1 bg-primary-600 text-white px-3 py-2 rounded-md hover:bg-primary-700 transition-colors"
+            className="flex items-center space-x-1 bg-primary-600 text-white px-2 py-1.5 rounded-md hover:bg-primary-700 transition-colors"
           >
-            <ShoppingCartIcon className="h-4 w-4" />
-            <span className="text-sm">Add</span>
+            <ShoppingCartIcon className="h-3 w-3" />
+            <span className="text-xs">Add</span>
           </button>
         </div>
       </div>
