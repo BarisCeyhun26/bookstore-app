@@ -25,7 +25,7 @@ export default function BestsellersSection() {
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Bestsellers</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
         {bestsellers.map((book) => (
-          <BookCard key={book.book_id} book={book} />
+          <BookCard key={book.bookId} book={book} />
         ))}
       </div>
     </section>

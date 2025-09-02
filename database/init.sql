@@ -50,17 +50,36 @@ CREATE TABLE inventory (
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Enhanced customers table for authentication
 CREATE TABLE customers (
     customer_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
     first_name VARCHAR(100) NOT NULL,
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     phone VARCHAR(20),
     address TEXT,
+    is_active BOOLEAN DEFAULT TRUE,
     is_member BOOLEAN DEFAULT FALSE,
     membership_discount DECIMAL(3,2) DEFAULT 0.00,
+    last_login TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Roles table for authorization
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- User roles junction table
+CREATE TABLE user_roles (
+    user_id INTEGER REFERENCES customers(customer_id) ON DELETE CASCADE,
+    role_id INTEGER REFERENCES roles(role_id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
 );
 
 CREATE TABLE orders (
@@ -102,129 +121,62 @@ CREATE INDEX idx_books_isbn ON books(isbn);
 CREATE INDEX idx_orders_customer_id ON orders(customer_id);
 CREATE INDEX idx_orders_order_date ON orders(order_date);
 CREATE INDEX idx_order_items_order_id ON order_items(order_id);
-CREATE INDEX idx_inventory_book_id ON inventory(book_id);
+CREATE INDEX idx_inventory_book_id ON inventory(inventory_id);
 CREATE INDEX idx_customers_email ON customers(email);
+CREATE INDEX idx_customers_username ON customers(username);
 CREATE INDEX idx_authors_last_name ON authors(last_name);
 
--- Insert sample data
-INSERT INTO publishers (id, name, address, phone, email) VALUES
-(1, 'Penguin Random House', '1745 Broadway, New York, NY 10019', '+1-212-782-9000', 'info@penguinrandomhouse.com'),
-(2, 'HarperCollins', '195 Broadway, New York, NY 10007', '+1-212-207-7000', 'info@harpercollins.com'),
-(3, 'Simon & Schuster', '1230 Avenue of the Americas, New York, NY 10020', '+1-212-698-7000', 'info@simonandschuster.com'),
-(4, 'Macmillan', '120 Broadway, New York, NY 10271', '+1-646-307-5151', 'info@macmillan.com'),
-(5, 'Hachette Book Group', '1290 Avenue of the Americas, New York, NY 10104', '+1-212-364-1100', 'info@hachettebookgroup.com'),
-(6, 'Scholastic', '557 Broadway, New York, NY 10012', '+1-212-343-6100', 'info@scholastic.com'),
-(7, 'Bloomsbury', '1385 Broadway, New York, NY 10018', '+1-212-419-5300', 'info@bloomsbury.com'),
-(8, 'Faber & Faber', '74-77 Great Russell Street, London WC1B 3DA', '+44-20-7927-3800', 'info@faber.co.uk'),
-(9, 'Vintage Books', '1745 Broadway, New York, NY 10019', '+1-212-782-9000', 'info@vintagebooks.com'),
-(10, 'Doubleday', '1745 Broadway, New York, NY 10019', '+1-212-782-9000', 'info@doubleday.com');
+-- Insert basic roles
+INSERT INTO roles (name, description) VALUES
+('USER', 'Regular customer user'),
+('ADMIN', 'Administrator with full access'),
+('MODERATOR', 'Moderator with limited admin access');
 
-INSERT INTO authors (id, first_name, last_name, biography, birth_date, email) VALUES
-(1, 'J.K.', 'Rowling', 'British author best known for the Harry Potter series', '1965-07-31', 'jk.rowling@example.com'),
-(2, 'George R.R.', 'Martin', 'American novelist and short story writer', '1948-09-20', 'grrm@example.com'),
-(3, 'Stephen', 'King', 'American author of horror, supernatural fiction, suspense, and fantasy novels', '1947-09-21', 'stephen.king@example.com'),
-(4, 'Agatha', 'Christie', 'English writer known for her detective novels', '1890-09-15', 'agatha.christie@example.com'),
-(5, 'Ernest', 'Hemingway', 'American novelist, short-story writer, and journalist', '1899-07-21', 'ernest.hemingway@example.com'),
-(6, 'Jane', 'Austen', 'English novelist known for her romantic fiction', '1775-12-16', 'jane.austen@example.com'),
-(7, 'Charles', 'Dickens', 'English writer and social critic', '1812-02-07', 'charles.dickens@example.com'),
-(8, 'Mark', 'Twain', 'American writer, humorist, entrepreneur, publisher, and lecturer', '1835-11-30', 'mark.twain@example.com'),
-(9, 'Virginia', 'Woolf', 'English writer, considered one of the most important modernist authors', '1882-01-25', 'virginia.woolf@example.com'),
-(10, 'F. Scott', 'Fitzgerald', 'American novelist, essayist, screenwriter, and short-story writer', '1896-09-24', 'fscott.fitzgerald@example.com');
+-- Insert admin user (password: admin123)
+INSERT INTO customers (username, first_name, last_name, email, password_hash, is_active, is_member) VALUES
+('admin', 'Admin', 'User', 'admin@bookstore.com', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa', TRUE, TRUE);
 
-INSERT INTO genres (id, name, description) VALUES
-(1, 'Fantasy', 'Fiction with magical and supernatural elements'),
-(2, 'Science Fiction', 'Fiction dealing with futuristic science and technology'),
-(3, 'Mystery', 'Fiction involving crime and detective work'),
-(4, 'Romance', 'Fiction focusing on romantic relationships'),
-(5, 'Horror', 'Fiction intended to frighten or scare readers'),
-(6, 'Historical Fiction', 'Fiction set in the past'),
-(7, 'Literary Fiction', 'Fiction with artistic merit and literary value'),
-(8, 'Thriller', 'Fiction with suspense and excitement'),
-(9, 'Biography', 'Non-fiction about a person''s life'),
-(10, 'Self-Help', 'Non-fiction books for personal development');
+-- Assign admin role to admin user
+INSERT INTO user_roles (user_id, role_id) VALUES (1, 2);
 
-INSERT INTO books (id, title, isbn, author_id, publisher_id, genre_id, publication_date, price, format, description, cover_image_url) VALUES
-(1, 'Harry Potter and the Philosopher''s Stone', '9780747532699', 1, 1, 1, '1997-06-26', 29.99, 'physical', 'The first book in the Harry Potter series', '/covers/harry-potter-1.jpg'),
-(2, 'Harry Potter and the Philosopher''s Stone', '9780747532698', 1, 1, 1, '1997-06-26', 19.99, 'e-book', 'The first book in the Harry Potter series', '/covers/harry-potter-1.jpg'),
-(3, 'A Game of Thrones', '9780553103540', 2, 2, 1, '1996-08-01', 34.99, 'physical', 'The first book in A Song of Ice and Fire series', '/covers/game-of-thrones.jpg'),
-(4, 'The Shining', '9780385121675', 3, 3, 5, '1977-01-28', 24.99, 'physical', 'A horror novel about a haunted hotel', '/covers/shining.jpg'),
-(5, 'Murder on the Orient Express', '9780062073495', 4, 4, 3, '1934-01-01', 19.99, 'physical', 'A classic detective novel', '/covers/murder-orient-express.jpg'),
-(6, 'The Old Man and the Sea', '9780684801223', 5, 5, 7, '1952-09-01', 15.99, 'physical', 'A novel about an aging fisherman', '/covers/old-man-sea.jpg'),
-(7, 'Pride and Prejudice', '9780141439518', 6, 6, 4, '1813-01-28', 12.99, 'physical', 'A classic romance novel', '/covers/pride-prejudice.jpg'),
-(8, 'Great Expectations', '9780141439563', 7, 7, 6, '1861-12-01', 18.99, 'physical', 'A coming-of-age novel', '/covers/great-expectations.jpg'),
-(9, 'The Adventures of Tom Sawyer', '9780143039563', 8, 8, 6, '1876-06-01', 16.99, 'physical', 'A novel about a young boy''s adventures', '/covers/tom-sawyer.jpg'),
-(10, 'Mrs. Dalloway', '9780156628709', 9, 9, 7, '1925-05-14', 14.99, 'physical', 'A modernist novel', '/covers/mrs-dalloway.jpg'),
-(11, 'The Great Gatsby', '9780743273565', 10, 10, 7, '1925-04-10', 17.99, 'physical', 'A novel about the American Dream', '/covers/great-gatsby.jpg'),
-(12, 'Harry Potter and the Chamber of Secrets', '9780747538493', 1, 1, 1, '1998-07-02', 29.99, 'e-book', 'The second book in the Harry Potter series', '/covers/harry-potter-2.jpg'),
-(13, 'A Clash of Kings', '9780553108033', 2, 2, 1, '1998-11-16', 34.99, 'audiobook', 'The second book in A Song of Ice and Fire series', '/covers/clash-kings.jpg'),
-(14, 'Carrie', '9780385086950', 3, 3, 5, '1974-04-05', 22.99, 'physical', 'Stephen King''s first published novel', '/covers/carrie.jpg'),
-(15, 'And Then There Were None', '9780062073488', 4, 4, 3, '1939-11-06', 18.99, 'e-book', 'A mystery novel about ten strangers', '/covers/and-then-none.jpg');
+-- Insert sample publishers
+INSERT INTO publishers (name, address, phone, email) VALUES
+('Penguin Random House', '1745 Broadway, New York, NY 10019', '+1-212-782-9000', 'info@penguinrandomhouse.com'),
+('HarperCollins', '195 Broadway, New York, NY 10007', '+1-212-207-7000', 'info@harpercollins.com'),
+('Simon & Schuster', '1230 Avenue of the Americas, New York, NY 10020', '+1-212-698-7000', 'info@simonandschuster.com'),
+('Macmillan Publishers', '120 Broadway, New York, NY 10271', '+1-646-307-5151', 'info@macmillan.com');
 
+-- Insert sample authors
+INSERT INTO authors (first_name, last_name, biography, birth_date, email) VALUES
+('J.K.', 'Rowling', 'British author, best known for the Harry Potter fantasy series', '1965-07-31', 'jkrowling@example.com'),
+('George', 'Orwell', 'English novelist, essayist, journalist and critic', '1903-06-25', 'george.orwell@example.com'),
+('Harper', 'Lee', 'American novelist best known for To Kill a Mockingbird', '1926-04-28', 'harper.lee@example.com'),
+('F. Scott', 'Fitzgerald', 'American novelist and short story writer', '1896-09-24', 'fscott.fitzgerald@example.com'),
+('Jane', 'Austen', 'English novelist known primarily for her six major novels', '1775-12-16', 'jane.austen@example.com'),
+('Mark', 'Twain', 'American writer, humorist, entrepreneur, publisher, and lecturer', '1835-11-30', 'mark.twain@example.com');
+
+-- Insert sample genres
+INSERT INTO genres (name, description) VALUES
+('Fantasy', 'Fantasy literature featuring magic, supernatural elements, and imaginary worlds'),
+('Dystopian Fiction', 'Fiction set in a society that is undesirable or frightening'),
+('Classic Literature', 'Timeless works of literature that have stood the test of time'),
+('Romance', 'Fiction focusing on romantic relationships and love stories'),
+('Adventure', 'Fiction featuring exciting, dangerous, or unusual experiences'),
+('Historical Fiction', 'Fiction set in the past, often during significant historical events');
+
+-- Insert sample books
+INSERT INTO books (title, isbn, author_id, publisher_id, genre_id, publication_date, price, format, description, cover_image_url) VALUES
+('Harry Potter and the Philosopher''s Stone', '9780747532699', 1, 1, 1, '1997-06-26', 12.99, 'physical', 'The first book in the Harry Potter series, following the adventures of a young wizard.', 'https://images.example.com/harry-potter-1.jpg'),
+('1984', '9780451524935', 2, 2, 2, '1949-06-08', 9.99, 'physical', 'A dystopian social science fiction novel about totalitarian control.', 'https://images.example.com/1984.jpg'),
+('To Kill a Mockingbird', '9780061120084', 3, 3, 3, '1960-07-11', 11.99, 'physical', 'A novel about racial injustice and childhood innocence in the American South.', 'https://images.example.com/mockingbird.jpg'),
+('The Great Gatsby', '9780743273565', 4, 4, 3, '1925-04-10', 10.99, 'physical', 'A story of the fabulously wealthy Jay Gatsby and his love for Daisy Buchanan.', 'https://images.example.com/gatsby.jpg'),
+('Pride and Prejudice', '9780141439518', 5, 1, 4, '1813-01-28', 8.99, 'physical', 'A romantic novel about Elizabeth Bennet and Mr. Darcy.', 'https://images.example.com/pride-prejudice.jpg'),
+('The Adventures of Tom Sawyer', '9780486400778', 6, 2, 5, '1876-12-01', 7.99, 'physical', 'A novel about a young boy growing up along the Mississippi River.', 'https://images.example.com/tom-sawyer.jpg'),
+('Harry Potter and the Chamber of Secrets', '9780747538493', 1, 1, 1, '1998-07-02', 13.99, 'e-book', 'The second book in the Harry Potter series.', 'https://images.example.com/harry-potter-2.jpg'),
+('Animal Farm', '9780451526342', 2, 2, 2, '1945-08-17', 8.99, 'e-book', 'An allegorical novella about farm animals who rebel against their human farmer.', 'https://images.example.com/animal-farm.jpg'),
+('Emma', '9780141439587', 5, 3, 4, '1815-12-23', 9.99, 'audiobook', 'A novel about Emma Woodhouse, a young woman who meddles in the love lives of her friends.', 'https://images.example.com/emma.jpg'),
+('The Adventures of Huckleberry Finn', '9780486280615', 6, 4, 5, '1884-12-10', 8.99, 'audiobook', 'A novel about Huck Finn and his journey down the Mississippi River.', 'https://images.example.com/huck-finn.jpg');
+
+-- Insert inventory for books
 INSERT INTO inventory (book_id, quantity) VALUES
-(1, 50), (2, 100), (3, 30), (4, 25), (5, 40), (6, 35), (7, 45), (8, 20), (9, 30), (10, 15),
-(11, 25), (12, 100), (13, 50), (14, 40), (15, 100);
-
-INSERT INTO customers (first_name, last_name, email, password_hash, phone, address, is_member, membership_discount) VALUES
-('John', 'Doe', 'john.doe@example.com', '$2a$10$hashedpassword1', '+1-555-0101', '123 Main St, New York, NY 10001', TRUE, 0.10),
-('Jane', 'Smith', 'jane.smith@example.com', '$2a$10$hashedpassword2', '+1-555-0102', '456 Oak Ave, Los Angeles, CA 90210', TRUE, 0.15),
-('Bob', 'Johnson', 'bob.johnson@example.com', '$2a$10$hashedpassword3', '+1-555-0103', '789 Pine St, Chicago, IL 60601', FALSE, 0.00),
-('Alice', 'Brown', 'alice.brown@example.com', '$2a$10$hashedpassword4', '+1-555-0104', '321 Elm St, Houston, TX 77001', TRUE, 0.10),
-('Charlie', 'Wilson', 'charlie.wilson@example.com', '$2a$10$hashedpassword5', '+1-555-0105', '654 Maple Dr, Phoenix, AZ 85001', FALSE, 0.00),
-('Diana', 'Davis', 'diana.davis@example.com', '$2a$10$hashedpassword6', '+1-555-0106', '987 Cedar Ln, Philadelphia, PA 19101', TRUE, 0.15),
-('Edward', 'Miller', 'edward.miller@example.com', '$2a$10$hashedpassword7', '+1-555-0107', '147 Birch Rd, San Antonio, TX 78201', FALSE, 0.00),
-('Fiona', 'Garcia', 'fiona.garcia@example.com', '$2a$10$hashedpassword8', '+1-555-0108', '258 Spruce Ave, San Diego, CA 92101', TRUE, 0.10),
-('George', 'Martinez', 'george.martinez@example.com', '$2a$10$hashedpassword9', '+1-555-0109', '369 Willow Way, Dallas, TX 75201', FALSE, 0.00),
-('Helen', 'Anderson', 'helen.anderson@example.com', '$2a$10$hashedpassword10', '+1-555-0110', '741 Poplar Pl, San Jose, CA 95101', TRUE, 0.15);
-
-INSERT INTO orders (customer_id, total_price, status, shipping_address, payment_method) VALUES
-(1, 89.97, 'delivered', '123 Main St, New York, NY 10001', 'credit_card'),
-(2, 69.98, 'shipped', '456 Oak Ave, Los Angeles, CA 90210', 'paypal'),
-(3, 44.98, 'processing', '789 Pine St, Chicago, IL 60601', 'credit_card'),
-(4, 59.97, 'delivered', '321 Elm St, Houston, TX 77001', 'credit_card'),
-(5, 34.99, 'pending', '654 Maple Dr, Phoenix, AZ 85001', 'paypal'),
-(6, 79.96, 'shipped', '987 Cedar Ln, Philadelphia, PA 19101', 'credit_card'),
-(7, 29.99, 'delivered', '147 Birch Rd, San Antonio, TX 78201', 'credit_card'),
-(8, 54.97, 'processing', '258 Spruce Ave, San Diego, CA 92101', 'paypal'),
-(9, 39.98, 'pending', '369 Willow Way, Dallas, TX 75201', 'credit_card'),
-(10, 64.95, 'shipped', '741 Poplar Pl, San Jose, CA 95101', 'credit_card');
-
-INSERT INTO order_items (order_id, book_id, quantity, unit_price, total_price) VALUES
-(1, 1, 1, 29.99, 29.99),
-(1, 3, 1, 34.99, 34.99),
-(1, 5, 1, 19.99, 19.99),
-(2, 2, 1, 19.99, 19.99),
-(2, 4, 1, 24.99, 24.99),
-(2, 6, 1, 15.99, 15.99),
-(3, 7, 1, 12.99, 12.99),
-(3, 8, 1, 18.99, 18.99),
-(3, 9, 1, 16.99, 16.99),
-(4, 10, 1, 14.99, 14.99),
-(4, 11, 1, 17.99, 17.99),
-(4, 12, 1, 29.99, 29.99),
-(5, 13, 1, 34.99, 34.99),
-(6, 14, 1, 22.99, 22.99),
-(6, 15, 1, 18.99, 18.99),
-(6, 1, 1, 29.99, 29.99),
-(7, 2, 1, 19.99, 19.99),
-(7, 3, 1, 34.99, 34.99),
-(8, 4, 1, 24.99, 24.99),
-(8, 5, 1, 19.99, 19.99),
-(8, 6, 1, 15.99, 15.99),
-(9, 7, 1, 12.99, 12.99),
-(9, 8, 1, 18.99, 18.99),
-(10, 9, 1, 16.99, 16.99),
-(10, 10, 1, 14.99, 14.99),
-(10, 11, 1, 17.99, 17.99);
-
-INSERT INTO shopping_cart (customer_id, book_id, quantity) VALUES
-(1, 12, 1),
-(1, 13, 2),
-(2, 14, 1),
-(3, 15, 1),
-(4, 1, 1),
-(5, 2, 1),
-(6, 3, 1),
-(7, 4, 1),
-(8, 5, 1),
-(9, 6, 1),
-(10, 7, 1);
+(1, 50), (2, 75), (3, 60), (4, 45), (5, 80), (6, 70), (7, 100), (8, 55), (9, 40), (10, 65);

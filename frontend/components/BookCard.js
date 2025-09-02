@@ -60,7 +60,7 @@ export default function BookCard({ book }) {
         </div>
 
         {/* Title */}
-        <Link href={`/books/${book.book_id}`}>
+        <Link href={`/books/${book.bookId}`}>
           <h3 className="text-base font-semibold text-gray-900 mb-1 hover:text-primary-600 transition-colors line-clamp-2">
             {book.title}
           </h3>
@@ -68,13 +68,13 @@ export default function BookCard({ book }) {
 
         {/* Author */}
         <p className="text-xs text-gray-600 mb-1">
-          by {book.author_name}
+          by {book.authorName}
         </p>
 
         {/* Genre */}
-        {book.genre_name && (
+        {book.genreName && (
           <p className="text-xs text-gray-500 mb-2">
-            {book.genre_name}
+            {book.genreName}
           </p>
         )}
 

@@ -78,6 +78,11 @@ export const useBookStore = create((set, get) => ({
 
   // Fetch authors
   fetchAuthors: async () => {
+    const { authors, loading } = get();
+    if (authors.length > 0 || loading) {
+      return; // Already cached or loading
+    }
+    
     set({ loading: true, error: null });
     try {
       const response = await api.get('/api/authors');
@@ -91,6 +96,11 @@ export const useBookStore = create((set, get) => ({
 
   // Fetch genres
   fetchGenres: async () => {
+    const { genres, loading } = get();
+    if (genres.length > 0 || loading) {
+      return; // Already cached or loading
+    }
+    
     set({ loading: true, error: null });
     try {
       const response = await api.get('/api/genres');

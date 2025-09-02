@@ -1,6 +1,13 @@
 # 📚 Online Bookstore Application
 
-Modern bir online kitap satış uygulaması. Backend (Node.js + PostgreSQL) ve Frontend (Next.js + Tailwind CSS) teknolojileri kullanılarak geliştirilmiştir.
+Modern bir online kitap satış uygulaması. Backend (Quarkus + PostgreSQL) ve Frontend (Next.js + Tailwind CSS) teknolojileri kullanılarak geliştirilmiştir.
+
+## 🔐 Authentication System
+
+- **User Registration & Login** - Complete authentication system
+- **JWT Tokens** - Secure token-based authentication
+- **Role-Based Access Control** - USER, ADMIN, MODERATOR roles
+- **Password Security** - BCrypt hashing
 
 ## 🚀 Özellikler
 
@@ -46,7 +53,7 @@ bookstore-app/
 
 1. **Repository'yi klonlayın:**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/YOUR_USERNAME/bookstore-app.git
    cd bookstore-app
    ```
 
@@ -59,6 +66,11 @@ bookstore-app/
 3. **Tarayıcıda açın:**
    - Frontend: http://localhost:3000
    - Backend API: http://localhost:8080
+   - Swagger UI: http://localhost:8080/swagger-ui
+
+4. **Test Kullanıcısı:**
+   - Username: `admin`
+   - Password: `Admin123!`
 
 ### Manuel Kurulum
 
@@ -77,11 +89,17 @@ npm run dev
 
 ## 🌐 API Endpoints
 
+### Public Endpoints
 - `GET /api/books` - Tüm kitapları listele
 - `GET /api/books/:id` - Kitap detayı
 - `GET /api/books/search?q=query` - Kitap arama
 - `GET /api/authors` - Yazar listesi
 - `GET /api/genres` - Tür listesi
+
+### Authentication Endpoints
+- `POST /auth/register` - Kullanıcı kaydı
+- `POST /auth/login` - Kullanıcı girişi
+- `POST /auth/refresh` - Token yenileme
 
 ## 📊 Veritabanı Şeması
 
@@ -89,7 +107,9 @@ npm run dev
 - **authors**: Yazar bilgileri
 - **genres**: Kitap türleri
 - **publishers**: Yayınevi bilgileri
-- **customers**: Müşteri bilgileri
+- **customers**: Müşteri bilgileri (authentication)
+- **roles**: Kullanıcı rolleri (USER, ADMIN, MODERATOR)
+- **user_roles**: Kullanıcı-rol ilişkileri
 - **orders**: Sipariş bilgileri
 
 ## 🐳 Docker

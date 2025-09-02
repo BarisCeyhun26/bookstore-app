@@ -1,27 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Header from '../components/Header';
-import axios from 'axios';
+import { useBookStore } from '../lib/store';
 
 export default function GenresPage() {
-  const [genres, setGenres] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { genres, loading, error, fetchGenres } = useBookStore();
 
   useEffect(() => {
-    fetchGenres();
-  }, []);
-
-  const fetchGenres = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get('http://localhost:8080/api/genres');
-      setGenres(response.data);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    if (genres.length === 0) {
+      fetchGenres();
     }
-  };
+  }, [genres.length, fetchGenres]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -35,7 +23,7 @@ export default function GenresPage() {
         </div>
 
         {/* Genres Grid */}
-        {loading && (
+        {loading && genres.length === 0 && (
           <div className="flex justify-center items-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
           </div>
@@ -47,7 +35,7 @@ export default function GenresPage() {
           </div>
         )}
         
-        {!loading && !error && (
+        {!error && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {genres.length > 0 ? (
               genres.map((genre) => (

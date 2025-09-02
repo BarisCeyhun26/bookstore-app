@@ -22,7 +22,9 @@ export default function HomePage() {
   useEffect(() => {
     fetchBooks();
     getBestsellers();
-  }, [fetchBooks, getBestsellers]);
+    fetchAuthors(); // Pre-load authors
+    fetchGenres();  // Pre-load genres
+  }, []); // Empty dependency array to run only once
 
   useEffect(() => {
     if (activeTab === 'authors' && authors.length === 0) {
@@ -95,27 +97,27 @@ export default function HomePage() {
         {activeTab === 'books' && (
           <section>
             <h2 className="text-2xl font-bold text-gray-900 mb-6">All Books</h2>
-            {loading && (
-              <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
-              </div>
-            )}
-            
-            {error && (
-              <div className="text-center py-12">
-                <p className="text-red-600">Error: {error}</p>
-                <button 
-                  onClick={() => fetchBooks()} 
-                  className="mt-2 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
-                >
-                  Retry
-                </button>
-              </div>
-            )}
-            
-            {!loading && !error && (
-              <BookGrid books={books} />
-            )}
+                    {loading && (
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+          </div>
+        )}
+        
+        {error && (
+          <div className="text-center py-12">
+            <p className="text-red-600">Error: {error}</p>
+            <button 
+              onClick={() => fetchBooks()} 
+              className="mt-2 px-4 py-2 bg-primary-600 text-white rounded-md hover:bg-primary-700"
+            >
+              Retry
+            </button>
+          </div>
+        )}
+        
+        {!loading && !error && (
+          <BookGrid books={books} />
+        )}
           </section>
         )}
 
