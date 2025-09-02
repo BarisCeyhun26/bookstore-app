@@ -35,6 +35,50 @@ export default function LoginPage() {
       <Head>
         <title>Sign In - Bookstore</title>
         <meta name="description" content="Sign in to your Bookstore account" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="robots" content="noindex, nofollow" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              // Prevent all password manager suggestions and change prompts
+              (function() {
+                if (typeof window === 'undefined') return;
+                
+                function disablePasswordManagers() {
+                  // Disable LastPass
+                  if (window.lastpass) {
+                    window.lastpass = null;
+                  }
+                  
+                  // Disable 1Password
+                  if (window._1password) {
+                    window._1password = null;
+                  }
+                  
+                  // Disable Bitwarden
+                  if (window.bitwarden) {
+                    window.bitwarden = null;
+                  }
+                  
+                  // Disable Chrome password manager
+                  const inputs = document.querySelectorAll('input[type="password"]');
+                  inputs.forEach(input => {
+                    input.setAttribute('autocomplete', 'off');
+                    input.setAttribute('data-lpignore', 'true');
+                    input.setAttribute('data-1p-ignore', 'true');
+                    input.setAttribute('data-bwignore', 'true');
+                  });
+                }
+                
+                // Run immediately and on DOM ready
+                disablePasswordManagers();
+                if (document.readyState === 'loading') {
+                  document.addEventListener('DOMContentLoaded', disablePasswordManagers);
+                }
+              })();
+            `,
+          }}
+        />
       </Head>
       <LoginForm />
     </>

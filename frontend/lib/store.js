@@ -36,7 +36,7 @@ export const useBookStore = create((set, get) => ({
   searchBooks: async (query) => {
     set({ loading: true, error: null });
     try {
-      const response = await api.get(`/api/search?q=${encodeURIComponent(query)}`);
+      const response = await api.get(`/api/books/search?q=${encodeURIComponent(query)}`);
       set({ books: response.data, loading: false });
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || 'Failed to search books';

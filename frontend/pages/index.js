@@ -145,9 +145,9 @@ export default function HomePage() {
             {!loading && !error && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {authors.map((author) => (
-                  <div key={author.author_id} className="bg-white rounded-lg shadow-sm p-6">
+                  <div key={author.id} className="bg-white rounded-lg shadow-sm p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      {author.first_name} {author.last_name}
+                      {author.firstName} {author.lastName}
                     </h3>
                     {author.biography && (
                       <p className="text-gray-600 text-sm mb-3 line-clamp-3">
@@ -190,7 +190,7 @@ export default function HomePage() {
             {!loading && !error && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {genres.map((genre) => (
-                  <div key={genre.genre_id} className="bg-white rounded-lg shadow-sm p-6">
+                  <div key={genre.id} className="bg-white rounded-lg shadow-sm p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-2">
                       {genre.name}
                     </h3>

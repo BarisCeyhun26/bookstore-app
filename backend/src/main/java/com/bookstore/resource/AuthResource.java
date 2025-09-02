@@ -4,7 +4,7 @@ import com.bookstore.service.AuthenticationService;
 import com.bookstore.service.AuthenticationService.LoginResponse;
 import com.bookstore.service.AuthenticationService.RegisterRequest;
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
+
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -23,7 +23,7 @@ public class AuthResource {
     @POST
     @Path("/login")
     @Operation(summary = "Kullanıcı girişi", description = "Kullanıcı adı ve şifre ile giriş yapar")
-    public Response login(@Valid LoginRequest request) {
+    public Response login(LoginRequest request) {
         try {
             LoginResponse response = authenticationService.login(request.getUsername(), request.getPassword());
             return Response.ok(response).build();
@@ -37,7 +37,7 @@ public class AuthResource {
     @POST
     @Path("/register")
     @Operation(summary = "Kullanıcı kaydı", description = "Yeni kullanıcı kaydı oluşturur")
-    public Response register(@Valid RegisterRequest request) {
+    public Response register(RegisterRequest request) {
         try {
             var customer = authenticationService.register(request);
             return Response.status(Response.Status.CREATED)
@@ -53,7 +53,7 @@ public class AuthResource {
     @POST
     @Path("/refresh")
     @Operation(summary = "Token yenileme", description = "Refresh token ile yeni access token oluşturur")
-    public Response refreshToken(@Valid RefreshTokenRequest request) {
+    public Response refreshToken(RefreshTokenRequest request) {
         try {
             String newAccessToken = authenticationService.refreshToken(request.getRefreshToken());
             return Response.ok(new TokenResponse(newAccessToken)).build();

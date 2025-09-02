@@ -72,7 +72,7 @@ const LoginForm = () => {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit} data-form-type="login" data-lpignore="true" data-1p-ignore="true" data-bwignore="true">
           {error && (
             <div className="rounded-md bg-red-50 p-4">
               <div className="flex">
@@ -106,7 +106,10 @@ const LoginForm = () => {
                   id="username"
                   name="username"
                   type="text"
-                  autoComplete="username"
+                  autoComplete="off"
+                  data-lpignore="true"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
                   required
                   value={formData.username}
                   onChange={handleChange}
@@ -125,7 +128,11 @@ const LoginForm = () => {
                   id="password"
                   name="password"
                   type={showPassword ? 'text' : 'password'}
-                  autoComplete="current-password"
+                  autoComplete="off"
+                  data-form-type="login"
+                  data-lpignore="true"
+                  data-1p-ignore="true"
+                  data-bwignore="true"
                   required
                   value={formData.password}
                   onChange={handleChange}
