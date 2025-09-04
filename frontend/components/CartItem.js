@@ -9,14 +9,14 @@ export default function CartItem({ item }) {
 
   const handleQuantityChange = (newQuantity) => {
     if (newQuantity < 1) {
-      removeFromCart(item.id);
+      removeFromCart(item.bookId);
     } else {
-      updateCartQuantity(item.id, newQuantity);
+      updateCartQuantity(item.bookId, newQuantity);
     }
   };
 
   const handleRemove = () => {
-    removeFromCart(item.id);
+    removeFromCart(item.bookId);
   };
 
   const formatPrice = (price) => {

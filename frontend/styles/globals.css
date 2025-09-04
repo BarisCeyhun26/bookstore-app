@@ -25,3 +25,68 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+/* Tüm input'lar için global düzeltme - En güçlü kurallar */
+input, input[type="text"], input[type="email"], input[type="password"] {
+  color: #000000 !important;
+  background-color: #ffffff !important;
+  -webkit-text-fill-color: #000000 !important;
+  -webkit-background-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Body'den inherit edilen color'ı override et */
+body input, body input[type="text"] {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Form içindeki input'lar */
+form input, form input[type="text"] {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Div içindeki input'lar */
+div input, div input[type="text"] {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* ID ile en güçlü kural */
+#search-input {
+  color: #000000 !important;
+  -webkit-text-fill-color: #000000 !important;
+}
+
+/* Dark mode override */
+@media (prefers-color-scheme: dark) {
+  input, input[type="text"], input[type="email"], input[type="password"] {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+    -webkit-text-fill-color: #000000 !important;
+    -webkit-background-color: #ffffff !important;
+    opacity: 1 !important;
+  }
+  
+  body input, body input[type="text"] {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
+  
+  form input, form input[type="text"] {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
+  
+  div input, div input[type="text"] {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
+  
+  #search-input {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+  }
+}
+

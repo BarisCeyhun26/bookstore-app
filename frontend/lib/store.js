@@ -80,7 +80,7 @@ export const useBookStore = create((set, get) => ({
   fetchAuthors: async () => {
     const { authors, loading } = get();
     if (authors.length > 0 || loading) {
-      return; // Already cached or loading
+      return;
     }
     
     set({ loading: true, error: null });
@@ -98,7 +98,7 @@ export const useBookStore = create((set, get) => ({
   fetchGenres: async () => {
     const { genres, loading } = get();
     if (genres.length > 0 || loading) {
-      return; // Already cached or loading
+      return;
     }
     
     set({ loading: true, error: null });
@@ -115,12 +115,12 @@ export const useBookStore = create((set, get) => ({
   // Cart operations
   addToCart: (book, quantity = 1) => {
     const { cart } = get();
-    const existingItem = cart.find(item => item.id === book.id);
+    const existingItem = cart.find(item => item.bookId === book.bookId);
     
     if (existingItem) {
       set({
         cart: cart.map(item =>
-          item.id === book.id
+          item.bookId === book.bookId
             ? { ...item, quantity: item.quantity + quantity }
             : item
         )
@@ -135,7 +135,7 @@ export const useBookStore = create((set, get) => ({
   removeFromCart: (bookId) => {
     const { cart } = get();
     set({
-      cart: cart.filter(item => item.id !== bookId)
+      cart: cart.filter(item => item.bookId !== bookId)
     });
   },
 
@@ -146,7 +146,7 @@ export const useBookStore = create((set, get) => ({
     } else {
       set({
         cart: cart.map(item =>
-          item.id === bookId
+          item.bookId === bookId
             ? { ...item, quantity }
             : item
         )
