@@ -9,7 +9,7 @@ import java.util.Set;
 @ApplicationScoped
 public class JwtService {
 
-    private static final String SECRET_KEY = "bookstore-secret-key-2024";
+    // SECRET_KEY is used in the token generation methods
     private static final int ACCESS_TOKEN_EXPIRY_MINUTES = 15;
     private static final int REFRESH_TOKEN_EXPIRY_DAYS = 7;
 

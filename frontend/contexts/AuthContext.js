@@ -241,12 +241,53 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
   };
 
+  // Update profile function
+  const updateProfile = async (profileData) => {
+    try {
+      const response = await axios.put(`${API_URL}/api/profile`, profileData);
+      
+      // Update user data in state
+      dispatch({
+        type: AUTH_ACTIONS.LOGIN_SUCCESS,
+        payload: {
+          token: state.token,
+          user: response.data
+        }
+      });
+
+      // Update localStorage
+      localStorage.setItem('user', JSON.stringify(response.data));
+
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to update profile';
+      throw new Error(errorMessage);
+    }
+  };
+
+  // Change password function
+  const changePassword = async (oldPassword, newPassword) => {
+    try {
+      await axios.post(`${API_URL}/api/profile/change-password`, {
+        oldPassword,
+        newPassword
+      });
+
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.response?.data?.error || 'Failed to change password';
+      throw new Error(errorMessage);
+    }
+  };
+
   const value = {
     ...state,
     login,
     register,
     logout,
-    clearError
+    clearError,
+    updateProfile,
+    changePassword
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

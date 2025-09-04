@@ -2,11 +2,9 @@ package com.bookstore.resource;
 
 import com.bookstore.dto.BookDTO;
 import com.bookstore.entity.Book;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -14,7 +12,6 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("/api/books")
 @Produces(MediaType.APPLICATION_JSON)

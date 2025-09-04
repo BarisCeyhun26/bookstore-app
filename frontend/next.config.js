@@ -3,7 +3,7 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'images.moviesanywhere.com'],
   },
-  output: 'standalone',
+  // output: 'standalone',
   async rewrites() {
     return [
       {
