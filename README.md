@@ -53,7 +53,7 @@ bookstore-app/
 
 1. **Repository'yi klonlayın:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/bookstore-app.git
+   git clone https://github.com/BarisCeyhun26/bookstore-app.git
    cd bookstore-app
    ```
 
